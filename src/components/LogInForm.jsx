@@ -4,12 +4,17 @@ import { logIn } from "../api/auth"
 import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import * as Yup from "yup"
+import { useNavigate } from "react-router-dom"
+import { useAuthContext } from "../context/AuthContextProvider"
 
 export default function LogInForm() {
+    //let [user, setUser] = useContext(AuthContext)
+    let [user, setUser] = useAuthContext()
+    let navigate = useNavigate()
     const formik = useFormik({
         initialValues: {
-            username: "",
-            password: "",
+            username: "kminchelle",
+            password: "0lelplR",
         },
         validationSchema: Yup.object({
             username: Yup.string().required("Please enter your username"),
@@ -20,6 +25,7 @@ export default function LogInForm() {
             logIn(values)
                 .then((res) => {
                     console.log(res)
+
                     toast.success("Logged In Successfully ", {
                         position: "top-center",
                         autoClose: 5000,
@@ -30,6 +36,9 @@ export default function LogInForm() {
                         progress: undefined,
                         theme: "light",
                     })
+                    localStorage.setItem("userInfo", JSON.stringify(res.data))
+                    setUser(res.data)
+                    navigate("/profile")
                 })
                 .catch((err) => {
                     //console.log(err.response.data.message)
